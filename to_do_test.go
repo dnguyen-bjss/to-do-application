@@ -13,7 +13,7 @@ func TestToDo(t *testing.T) {
 	}
 	
 	got := todo.String()
-	want := "1 - Complete assignment - false"
+	want := "ID: 1, Description: Complete assignment, Completed: false"
 	
 	if got != want {
 		t.Errorf("got %q, want %q", got, want)
@@ -35,7 +35,7 @@ func TestDisplay(t *testing.T) {
 	Display(&buffer, todo1, todo2)
 
 	got := buffer.String()
-	want := "1 - Wash dishes - false\n2 - Hoover the house - true\n"
+	want := "{\"id\":1,\"description\":\"Wash dishes\",\"completed\":false}\n{\"id\":2,\"description\":\"Hoover the house\",\"completed\":true}\n"
 	
 	if got != want {
 		t.Errorf("got %q, want %q", got, want)

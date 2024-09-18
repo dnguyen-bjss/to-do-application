@@ -1,28 +1,35 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
 )
 
 type ToDo struct {
-	ID          int
-	Description string
-	Completed   bool
+	ID          int		`json:"id"`
+	Description string	`json:"description"`
+	Completed   bool	`json:"completed"`
 }
 
 func (t ToDo) String() string {
-	return fmt.Sprintf("%d - %s - %t", t.ID, t.Description, t.Completed)
+	return fmt.Sprintf("ID: %d, Description: %s, Completed: %t", t.ID, t.Description, t.Completed)
 }
 
 func Display(writer io.Writer, todos ...ToDo) {
 	for _, todo := range todos {
-		fmt.Fprintf(writer, "%s\n", todo.String())
+		todoBytes, _ := json.Marshal(todo)
+		fmt.Fprintf(writer, "%s\n", string(todoBytes))
 	}
 }
 
 func main() {
+	todos := generateToDos()
+	Display(os.Stdout, todos...)
+}
+
+func generateToDos() []ToDo {
 	var todos []ToDo
 	for i := 1; i <= 10; i++ {
 		todos = append(todos, ToDo{
@@ -31,5 +38,5 @@ func main() {
 			Completed:   false,
 		})
 	}
-	Display(os.Stdout, todos...)
+	return todos
 }
