@@ -17,16 +17,14 @@ func (t ToDo) String() string {
 	return fmt.Sprintf("ID: %d, Description: %s, Completed: %t", t.ID, t.Description, t.Completed)
 }
 
-func Display(writer io.Writer, todos ...ToDo) {
-	for _, todo := range todos {
-		todoBytes, _ := json.Marshal(todo)
-		fmt.Fprintf(writer, "%s\n", string(todoBytes))
-	}
+func DisplayAsJson(writer io.Writer, todos ...ToDo) {
+	todoBytes, _ := json.Marshal(todos)
+	fmt.Fprintf(writer, "%s\n", string(todoBytes))
 }
 
 func main() {
 	todos := generateToDos()
-	Display(os.Stdout, todos...)
+	DisplayAsJson(os.Stdout, todos...)
 }
 
 func generateToDos() []ToDo {

@@ -32,10 +32,10 @@ func TestDisplay(t *testing.T) {
 		Completed:   true,
 	}
 	buffer := bytes.Buffer{}
-	Display(&buffer, todo1, todo2)
+	DisplayAsJson(&buffer, todo1, todo2)
 
 	got := buffer.String()
-	want := "{\"id\":1,\"description\":\"Wash dishes\",\"completed\":false}\n{\"id\":2,\"description\":\"Hoover the house\",\"completed\":true}\n"
+	want := "[{\"id\":1,\"description\":\"Wash dishes\",\"completed\":false},{\"id\":2,\"description\":\"Hoover the house\",\"completed\":true}]\n"
 	
 	if got != want {
 		t.Errorf("got %q, want %q", got, want)

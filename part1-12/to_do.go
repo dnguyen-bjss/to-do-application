@@ -23,12 +23,10 @@ func SaveToFile(filename string, todos ...ToDo) error {
 	}
 	defer file.Close()
 	
-	for _, todo := range todos {
-		todoBytes, _ := json.Marshal(todo)
-		_, err = file.Write(todoBytes)
-		if err != nil {
-			return err
-		}
+	todoBytes, _ := json.Marshal(todos)
+	_, err = file.Write(todoBytes)
+	if err != nil {
+		return err
 	}
 	return nil
 }
