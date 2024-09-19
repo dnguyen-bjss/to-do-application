@@ -10,8 +10,8 @@ func addNumbers(wg *sync.WaitGroup, numbers *[]int, max int, startNumber int) {
 	defer wg.Done()
     for i := startNumber; i < max; i += 2 {
 		*numbers = append(*numbers, i)
-		fmt.Printf("Added %d\n", i)
-		time.Sleep(1 * time.Millisecond)
+		fmt.Printf("%d\n", numbers)
+		time.Sleep(time.Millisecond)
     }
 }
 
@@ -23,7 +23,9 @@ func main() {
 
 	max := 100
 	go addNumbers(&wg, &numbers, max, 0)
-	go addNumbers(&wg,&numbers, max, 1)
+	go addNumbers(&wg, &numbers, max, 1)
 
 	wg.Wait()
+
+	fmt.Println("Length of numbers:", len(numbers))
 }
