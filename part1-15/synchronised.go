@@ -7,33 +7,47 @@ import (
 )
 
 var mu sync.Mutex
-	
-func addNumbers(wg *sync.WaitGroup, numberChannel chan int, max int, startNumber int) {
+
+type numberStruct struct {
+	source string
+	number int
+}
+
+func addNumbers(source string, wg *sync.WaitGroup, numberChannel chan numberStruct, max int, startNumber int) {
 	defer wg.Done()
-	mu.Lock()
     for i := startNumber; i < max; i += 2 {
-		numberChannel <- i
-		time.Sleep(1 * time.Millisecond)
+		func() {
+			mu.Lock()
+			defer mu.Unlock()
+			numberChannel <- numberStruct{source, i}
+			time.Sleep(1 * time.Millisecond)
+		} ()
     }
-	mu.Unlock()
 }
 
 func main() {
-	numberChannel := make(chan int)
+	numberChannel := make(chan numberStruct)
+	done := make(chan bool)
 	var wg sync.WaitGroup
 	
 	wg.Add(2)
 
 	max := 100
-	go addNumbers(&wg, numberChannel, max, 0)
-	go addNumbers(&wg, numberChannel, max, 1)
+	go addNumbers("[even]", &wg, numberChannel, max, 0)
+	go addNumbers("[odd]", &wg, numberChannel, max, 1)
 
-	go func() {
+	numberCount := 0
+	go func () {
 		for number := range numberChannel {
-			fmt.Printf("Received: %d\n", number)
+			numberCount++
+			fmt.Printf("%s\t number: %d\n", number.source, number.number)
 		}
+		done <- true
 	}()
 
 	wg.Wait()
 	close(numberChannel)
+	<-done
+
+	fmt.Println("Number count: ", numberCount)
 }
